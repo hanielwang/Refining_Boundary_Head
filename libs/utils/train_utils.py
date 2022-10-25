@@ -456,27 +456,10 @@ def valid_one_epoch(
     with open(results_json_path, "w") as json_file_out:
         json.dump(output_dict, json_file_out)
     print('-------write done-------------')
-    #print('test_nms_sigma = ' + str(args.test_nms_sigma))
-    #print('test_voting_thresh = ' + str(args.test_voting_thresh))
-
 
     local_anno_file = './data/epic_kitchens/annotations/EPIC_100_validation.json'
-    result_path = results_json_path#'/mnt/storage/scratch/dm19329/C2-Action-Detection/EPIC_challenge/actionformer_release_freeze/outputs/test_gau_sigma_5.5.json'
-    evaluate_detection(args, local_anno_file, result_path, tiou_thresholds=np.array([0.1,0.2,0.3,0.4,0.5]))
-    # if evaluator_verb is not None:
-    #     #print('evaluator is not none')
-    #     if (ext_score_file is not None) and isinstance(ext_score_file, str):
-    #         #print('ext_score is not none')
-    #         results = postprocess_results(results, ext_score_file)
+    evaluate_detection(args, local_anno_file, results_json_path, tiou_thresholds=np.array([0.1,0.2,0.3,0.4,0.5]))
 
-    #     # call the evaluator
-    #     _, mAP_verb = evaluator_verb.evaluate(results, verbose=True)
-    #     _, mAP_noun = evaluator_noun.evaluate(results, verbose=True)
-
-    # else:
-    #     # dump to a pickle file that can be directly used for evaluation
-    #     with open(output_file, "wb") as f:
-    #         pickle.dump(results, f)
     mAP = 0.0
 
     # log mAP to tb_writer
