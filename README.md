@@ -69,11 +69,11 @@ python ./train.py ./configs/epic_slowfast.yaml --output reproduce  --gau_sigma 5
 
 To validate the model run:
 ```
-time python ./eval.py ./configs/epic_slowfast.yaml ./ckpt/epic_slowfast_reproduce/name_of_the_best_model --gau_sigma 5.5
+python ./eval.py ./configs/epic_slowfast.yaml ./ckpt/epic_slowfast_reproduce/name_of_the_best_model --gau_sigma 5.5
 ```
 
 ## Results
-
+```
 [RESULTS] Action detection results_self.ap_action
 
 |tIoU = 0.10: mAP = 19.19 (%)
@@ -98,7 +98,7 @@ Avearge mAP: 20.53 (%)
 |tIoU = 0.40: mAP = 19.19 (%)
 |tIoU = 0.50: mAP = 16.73 (%)
 Avearge mAP: 20.71 (%)
-
+```
 
 ## Reference
 
@@ -109,7 +109,7 @@ Our main contribution is in:
 ./libs/modeling/meta_archs.:
 * We incorporate the estimation of boundary confidence into prediction heads. 
 * We merged the classification heads of verb and noun, so the model can predict results for action task. 
-* We implement label assignment for boundary confidence.
+* We implemented label assignment for boundary confidence.
 
 ./libs/modeling/losses.py:
 * We added the supervision of boundary confidence, including confidence scaling and loss function.
