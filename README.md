@@ -43,11 +43,11 @@ cd ../..
 
 ### Datasets and feature
 
-You can download the annotation repository of EPIC-KITCHENS-100 at [here](https://github.com/epic-kitchens/epic-kitchens-100-annotations)). Place it into a folder: ./data/epic_kitchens/annotations.
+You can download the annotation repository of EPIC-KITCHENS-100 at [here](https://github.com/epic-kitchens/epic-kitchens-100-annotations). Place it into a folder: ./data/epic_kitchens/annotations.
 
 You can download the videos of EPIC-KITCHENS-100 at [here](https://github.com/epic-kitchens/epic-kitchens-download-scripts).
 
-You can download the feature on THUMOS14 at here [here](https://uob-my.sharepoint.com/:u:/g/personal/dm19329_bristol_ac_uk/EeXBKfXuurxNiZ3wazARQQsBD7j76jQMknSTgUTmXFYOog?e=Nt10i2). Place it into a folder: ./data/epic_kitchens/features.
+You can download the feature on THUMOS14 at [here](https://uob-my.sharepoint.com/:u:/g/personal/dm19329_bristol_ac_uk/EeXBKfXuurxNiZ3wazARQQsBD7j76jQMknSTgUTmXFYOog?e=Nt10i2). Place it into a folder: ./data/epic_kitchens/features.
 
 If everything goes well, you can get the folder architecture of ./data like this:
 
@@ -110,7 +110,7 @@ This implementation is based on [ActionFormer](https://github.com/happyharrycn/a
 Our main contribution is in: 
 ```
 ./libs/modeling/meta_archs.:
-* We incorporate the estimation of boundary confidence into prediction heads. 
+* We incorporate the estimation of boundary confidence into prediction heads in both training and inference. 
 * We merged the classification heads of verb and noun, so the model can predict results for action task. 
 * We implemented label assignment for boundary confidence.
 
