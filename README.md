@@ -6,7 +6,7 @@ Hanyuan Wang, Majid Mirmehdi, Dima Damen, Toby Perrett, **Refining Action Bounda
 
 [[arXiv paper]]( )
 
-This repository is based on [ActionFormer](https://github.com/happyharrycn/actionformer_release)
+This repository is based on [ActionFormer](https://github.com/happyharrycn/actionformer_release).
 
 
 
@@ -54,9 +54,10 @@ If everything goes well, you can get the folder architecture of ./data like this
         ├── features              
         └── annotations
 
-###Pretrained models
 
-You can download our pretrained models on EPIC-KITCHENS-100 at [here](https://uob-my.sharepoint.com/:u:/g/personal/dm19329_bristol_ac_uk/Ee4E66e04lhPsajKJZL-bHcBkVEGzkP-A8HjjALAUAPOEQ?e=IwiDkx)
+### Pretrained models
+
+You can download our pretrained models on EPIC-KITCHENS-100 at [here](https://uob-my.sharepoint.com/:u:/g/personal/dm19329_bristol_ac_uk/Ee4E66e04lhPsajKJZL-bHcBkVEGzkP-A8HjjALAUAPOEQ?e=IwiDkx).
 
 
 
