@@ -1,4 +1,4 @@
-# Refining Action Boundaries
+# Refining Boundary Head
 
 This repository implements the boundaries head proposed in the paper:
 
@@ -113,6 +113,11 @@ Our main contribution is in:
 * We implemented label assignment for boundary confidence.
 
 ./libs/modeling/losses.py:
-* We added the supervision of boundary confidence, including confidence scaling and loss function.
+* We added the supervision of boundary confidence, including confidence scaling and loss function calculation.
 
+libs/datasets/epic_kitchens.py:
+* We Loaded data for noun and verb together. 
+
+/libs/utils/nms.py:
+* We changed the sort of NMS through action socres instead of separate verb/noun scores.
 ```
