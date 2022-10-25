@@ -35,42 +35,6 @@ def sigmoid_focal_loss(
 
 
 
-
-
-
-
-
-# def sigmoid_focal_loss(
-#     inputs,
-#     targets,
-#     reduction = 'none',
-#     alpha = 0.25,
-#     gamma = 2.0):
-#     """
-
-#     """
-#     p = torch.sigmoid(inputs)
-#     ce_loss = F.binary_cross_entropy_with_logits(inputs, targets, reduction="none")
-#     p_t = p * targets + (1 - p) * (1 - targets)
-#     loss = ce_loss * ((1 - p_t) ** gamma)
-
-#     if alpha >= 0:
-#         alpha_t = alpha * targets + (1 - alpha) * (1 - targets)
-#         loss = alpha_t * loss
-#     # print('----------------------------------------------')
-#     # print(loss.sum())
-#     # print(loss.shape)
-#     if reduction == "mean":
-#         loss = loss.mean()
-#     elif reduction == "sum":
-#         loss = loss.sum()
-
-#     return loss
-
-
-
-
-
 def ctr_giou_loss_1d(
     args,vid_idx,input_offsets,input_conf,
     target_offsets, target_start, target_end,
@@ -127,20 +91,11 @@ def ctr_giou_loss_1d(
         loss_offset = loss_offset.sum()
 
     
-
     ############################# Gaussian lable #################################
     sigma2 = args.gau_sigma#*3
 
-    # conf_s = torch.div(torch.exp(-target_offsets[:, 0]),2*sigma*sigma)
-    # conf_e = torch.div(torch.exp(-target_offsets[:, 1]),2*sigma*sigma)
     input_conf_s = torch.exp(torch.div(-torch.square(input_conf[:, 0]),2*sigma2*sigma2))
     input_conf_e = torch.exp(torch.div(-torch.square(input_conf[:, 1]),2*sigma2*sigma2))
-    # print('----------------------------------')
-    # # print(target_start.device())
-    # #target_start = torch.tensor(target_start)
-    # #target_end = torch.tensor(target_end)
-    # print(target_start)
-    # print(input_conf_s)
 
     iou_mask = (miouk > 0.5).float()#iou_mask = (miouk > 0.7).float()
     loss_conf_s = torch.square(target_start.cuda() - input_conf_s).float()
@@ -153,78 +108,5 @@ def ctr_giou_loss_1d(
 
     loss = args.sigma1*loss_offset + args.sigma2*loss_conf
 
-    # ############################################# plot curve ################################################
-    # x = range(len(target_start))
-    # plt.figure(figsize=(20,5))
-
-    # plt.subplot(2,1,1)
-    # plt.plot(x, target_start.cpu().detach().numpy(), ms=10,label='GT')
-    # plt.legend()
-
-    # plt.subplot(2,1,2)
-    # plt.plot(x, input_conf_s.cpu().detach().numpy(), ms=10,label='Pred_start')
-    # plt.legend()
-
-    # # plt.subplot(3,1,3)
-    # # plt.plot(x, input_conf_e.cpu().detach().numpy(), ms=10,label='Pred_end')
-
-    # # plt.legend()
-
-    # plt.xlabel('time')
-    # plt.ylabel("value")
-    # pyplot.yticks([0.0,1.2])
-    # plt.savefig('./outputs/Training_BSN_GT_Gaussian_curve_combine1DCNN_'+str(vid_idx[0])+'_sigmoid.jpg', dpi = 80)
-    # plt.clf()
-    #############################################################################################################
-    # ############################################# plot curve ################################################
-    # x = range(len(target_start[0:200]))
-    
-    # fig = plt.figure(figsize=(20,5))
-    # plt.subplot(4,1,1)
-    # plt.plot(x, target_start.cpu().detach().numpy()[0:200], ms=10,label='GT_Start')
-    # plt.legend()
-
-    # plt.subplot(4,1,2)
-    # plt.plot(x, input_conf_s.cpu().detach().numpy()[0:200], ms=10,label='Pred_Start')
-    # plt.legend()
-
-    # plt.subplot(4,1,3)
-    # plt.plot(x, target_end.cpu().detach().numpy()[0:200], ms=10,label='GT_End')
-    # plt.legend()
-
-    # plt.subplot(4,1,4)
-    # plt.plot(x, input_conf_e.cpu().detach().numpy()[0:200], ms=10,label='Pred_End')
-    # plt.legend()
-
-    # plt.xlabel('time')
-    # plt.ylabel("confidence value")
-    #   #pyplot.yticks([0.0,1.2])
-    # fig.suptitle(str(vid_idx[0]))
-    # plt.savefig('./outputs/Training_BSN_GT_Gaussian_curve_combine1DCNN_'+str(vid_idx)+'_sigmoid.jpg', dpi = 80)
-    # plt.clf()
-    # #############################################################################################################
-
     return loss
 
-
-
-
-    # # giou
-    # len_c = lc + rc
-    # miouk = iouk - ((len_c - unionk) / len_c.clamp(min=eps))
-
-    # loss_offset = 1.0 - miouk
-    # loss_conf = torch.square(miouk - input_conf.squeeze()).float()
-
-    # print('--------------------------')
-    # print(loss_offset[0:30])
-    # print(loss_conf[0:30])
-    # #loss = 1.0 - miouk
-    # loss = loss_offset + loss_conf
-
-    # if reduction == "mean":
-    #     loss = loss.mean() if loss.numel() > 0 else 0.0 * loss.sum()
-    # elif reduction == "sum":
-    #     loss = loss.sum()
-
-    # return loss
