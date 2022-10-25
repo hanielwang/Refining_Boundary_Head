@@ -248,55 +248,21 @@ class PtTransformerRegHead(nn.Module):
         # apply the classifier for each pyramid level
         out_offsets = tuple()
         out_conf = tuple() 
-        # print('==========================================================================================')
-        # print(len(fpn_feats[0][0][0]))
-        # print(len(fpn_masks[0][0][0]))
-        # print(fpn_masks[0][0][0][:100])
-        # print('-------------------------feat dim-----------------fpn level---- ')
-        # print(len(fpn_feats))
-        # print(len(fpn_feats[0]))
-        # print(len(fpn_feats[0][0]))
-        # print(len(fpn_feats[0][0][0]))
+
 
         for l, (cur_feat, cur_mask) in enumerate(zip(fpn_feats, fpn_masks)): #fpn_feats.shape=(2,512,T), T = [2304,1152,576,288,144,72] for all vids
             cur_out = cur_feat
-
-            # print('-------------------------feat dim-----------------fpn level---- '+str(l))
-            # print(len(cur_feat))
-            # print(len(cur_feat[0]))
-            # print(len(cur_feat[0][0]))
-            #print(len(cur_feat[0][0][0]))
-            # print('-------------------------maskkkkkkkkkkk dim-----------------fpn level---- '+str(l))
-
-            # print(cur_mask[0][0])
 
             for idx in range(len(self.head)):#cycle only for build 3 (1D convolutional + layer normal + ReLU) layers
                 cur_out, _ = self.head[idx](cur_out, cur_mask) # 1D convolutional layer
                 cur_out = self.act(self.norm[idx](cur_out)) # layer normal + ReLU
 
-            #####################################################################################    
-            # cur_offsets, _ = self.offset_head(cur_out, cur_mask) # another single 1D conv layer
-            # out_offsets += (F.relu(self.scale[l](cur_offsets[:,[0,1],:])), ) # add the activation output (shape=(1,2)) for all pyramid level
-
-            # out_conf += (F.relu(self.scale[l](cur_offsets[:,[2,3],:])), ) 
-            #########################################################################################
-
-            ##########################################################################################
             cur_offsets, _ = self.offset_head(cur_out, cur_mask) # another single 1D conv layer, out shape = [2, 2, T]
             out_offsets += (F.relu(self.scale[l](cur_offsets)), ) # add the activation output (shape=(1,2)) for all pyramid level
 
             cur_conf, _ = self.conf_head(cur_out, cur_mask) # another single 1D conv layer
             out_conf += (F.relu(self.scale[l](cur_conf)), ) # add the activation output (shape=(1,2)) for all pyramid level
-            ###########################################################################################
-        # print('---------------------------------')
-        # print(len(out_offsets))
-        # print(len(out_offsets[0]))
-        # print(len(out_offsets[0][0]))
-        # print(len(out_offsets[0][0][0]))
-        #print([len(a) for a in out_offsets[0]])
-        #print([len(a) for a in out_offsets[0][0]]) 
-        # final addtional out_offsets.shape = (6,2,2304), so fpn_levels is 6
-        # fpn_masks remains the same
+
         return out_offsets,out_conf
 
 
@@ -535,16 +501,8 @@ class PtTransformer(nn.Module):
             # compute the gt labels for cls & reg
             # list of prediction targets
 
-            # print('----------------------------------gt_segments---')
-            # print(gt_segments[0])
-            # print(len(gt_segments[1]))
             gt_cls_labels_v, gt_cls_labels_n, gt_offsets, gt_start, gt_end = self.label_points(
                 points, gt_segments, gt_labels_v, gt_labels_n)
-
-            # print('----------------------------------gt_offsets----------------------')
-            # print(len(gt_offsets[0]))
-            # print(len(gt_offsets[0][0]))
-            #print(len(gt_offsets[0][0][0]))
 
             # compute the loss and return
 
@@ -731,13 +689,6 @@ class PtTransformer(nn.Module):
 
 
         ##################################### boundary lable ##########################################
-
-        # print('--------------------------------------')
-        # print(len(anchor_xmin))
-        # print(len(anchor_xmax))
-        # print(anchor_xmin[-20:-1])
-        # print(anchor_xmax[-20:-1])
-        #print(anchor_xmax)
         starting_gt = []
         ending_gt = []
 
@@ -774,10 +725,7 @@ class PtTransformer(nn.Module):
 
         starting_gt = torch.Tensor(starting_gt)
         ending_gt = torch.Tensor(ending_gt)
-        #####################################################################################
-        # print('000000000000000000000000000000')
-        # print(type(reg_targets))
-        # print(type(starting_gt))
+
         return cls_targets_v, cls_targets_n, reg_targets, starting_gt, ending_gt
 
     def losses(
@@ -796,15 +744,10 @@ class PtTransformer(nn.Module):
         gt_cls_n = torch.stack(gt_cls_labels_n)
         pos_mask = (gt_cls_n >= 0) & (gt_cls_n != self.num_classes_noun) &(gt_cls_v >= 0) & (gt_cls_v != self.num_classes_verb) & valid_mask
 
-        # shape of out_offsets = (6, 2, T (2304, 1152, ..., 72),2)
-        # shape of out_conf = (6, 2, T (2304, 1152, ..., 72),1)
 
         # cat the predicted offsets -> (B, FT, 2 (xC)) -> # (#Pos, 2 (xC))
         pred_offsets = torch.cat(out_offsets, dim=1)[pos_mask]
         pred_conf = torch.cat(out_conf, dim=1)[pos_mask]
-        # shape of pred_offsets = (6, 2, T (2304, 1152, ..., 72),2) ---> (2, 4536, 2)
-        # shape of pred_offsets = (6, 2, T (2304, 1152, ..., 72),1) ---> (2, 4536, 2)
-
 
         gt_offsets = torch.stack(gt_offsets)[pos_mask]
         gt_start = torch.stack(gt_start)[pos_mask]
@@ -905,30 +848,13 @@ class PtTransformer(nn.Module):
         vid_ft_stride = [x['feat_stride'] for x in video_list]
         vid_ft_nframes = [x['feat_num_frames'] for x in video_list]
 
-        # ground_truth_filename3 = './outputs/GT_val_action.json'
-        # with open(ground_truth_filename3, 'r') as f1:
-        #     GT_val_a = json.load(f1)
-
-        # ground_truth_s = './outputs/boundary_gt_s.json'
-        # with open(ground_truth_s, 'r') as f2:
-        #     GT_val_s = json.load(f2)
-
-        # ground_truth_e = './outputs/boundary_gt_e.json'
-        # with open(ground_truth_e, 'r') as f3:
-        #     GT_val_e = json.load(f3)
 
         # 2: inference on each single video and gather the results
         # upto this point, all results use timestamps defined on feature grids
         for idx, (vidx, fps, vlen, stride, nframes) in enumerate(
             zip(vid_idxs, vid_fps, vid_lens, vid_ft_stride, vid_ft_nframes)
         ):
-            #print(vidx)
-            # if vidx == 'P18_03':
-            #     print('----------------------------00000000000000000000000000000')
-            #     print (vid_fps)
-            #     print(vid_lens)
-            #     print(vid_ft_stride) 
-            #     print(vid_ft_nframes)
+
             # gather per-video outputs
             cls_logits_per_vid_verb = [x[idx] for x in out_cls_logits_verb]
             cls_logits_per_vid_noun = [x[idx] for x in out_cls_logits_noun]
@@ -943,10 +869,6 @@ class PtTransformer(nn.Module):
             results_per_vid = self.inference_single_video(args,
                 points, fpn_masks_per_vid,
                 cls_logits_per_vid_verb, cls_logits_per_vid_noun, offsets_per_vid, conf_per_vid, vidx)
-            # results_per_vid = self.inference_single_video(
-            #     points, fpn_masks_per_vid,
-            #     cls_logits_per_vid, offsets_per_vid
-            # )
                 
             # pass through video meta info
             results_per_vid['video_id'] = vidx
@@ -1028,9 +950,6 @@ class PtTransformer(nn.Module):
 
             pred_prob = mul_cls_score.flatten() #cls_noun_score*cls_verb_score#*cls_noun_score#cls_verb_score * cls_noun_score
 
-
-
-
             # Apply filtering to make NMS faster following detectron2
             # 1. Keep seg with confidence score > a threshold
             keep_idxs1 = (pred_prob > self.test_pre_nms_thresh * self.test_pre_nms_thresh)
@@ -1059,26 +978,6 @@ class PtTransformer(nn.Module):
             cls_noun_idxs = cls_noun_label_topk[pt_idxs,cls_noun_idxs1]
             cls_verb_idxs = cls_verb_label_topk[pt_idxs,cls_verb_idxs1]
             #####################################################################################3
-
-            #################################### original #########################################
-            # pt_idxs =  torch.div(
-            #     topk_idxs, 97, rounding_mode='floor'
-            # )
-            # cls_verb_idxs = torch.fmod(topk_idxs, 97)
-            # cls_noun_idxs = cls_verb_idxs
-            #####################################################################################3
-
-            #cls_noun_idxs = 
-            # pt_idxs =  torch.div(
-            #     topk_idxs, self.num_classes, rounding_mode='floor'
-            # ) # orignal temporal idx for max 2304
-            # cls_idxs = torch.fmod(topk_idxs, self.num_classes) # corresponding cls idx
-
-            # print('----------------====================')
-            # print(pt_idxs[200:400])
-            # print(cls_verb_idxs[200:400])
-            # print(cls_noun_idxs[200:400])
-
 
             # 3. gather predicted offsets
             offsets = offsets_i[pt_idxs]
@@ -1119,13 +1018,6 @@ class PtTransformer(nn.Module):
             torch.cat(x) for x in [segs_all, scores_all, cls_idxs_verb_all, cls_idxs_noun_all]
         ]
         cls_idxs_action_all = []
-
-        # print('=========================')
-        # print(cls_idxs_verb_all[0:10])
-        # for i in range(len(cls_idxs_verb_all)):
-        #     cls_idxs_action_all.append(str(int(cls_idxs_verb_all[i].cpu())) + ',' + str(int(cls_idxs_noun_all[i].cpu())))
-        # print('--------------------------')
-        # print(torch.Tensor([cls_idxs_action_all[0:10]]))
 
         results = {'segments' : segs_all,
                    'scores'   : scores_all,
