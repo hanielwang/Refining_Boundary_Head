@@ -4,7 +4,7 @@ This repository implements the boundaries head proposed in the paper:
 
 Hanyuan Wang, Majid Mirmehdi, Dima Damen, Toby Perrett, **Refining Action Boundaries for One-stage Detection**, *AVSS*, 2022
 
-[[arXiv paper]]( )
+[[arXiv paper]](https://arxiv.org/abs/2210.14284#)
 
 This repository is based on [ActionFormer](https://github.com/happyharrycn/actionformer_release).
 
@@ -15,7 +15,11 @@ This repository is based on [ActionFormer](https://github.com/happyharrycn/actio
 When using this code, kindly reference:
 
 ```
-
+@INPROCEEDINGS{HanyuanRefining2022,
+  author={Wang, Hanyuan and Mirmehdi, Majid and Damen, Dima and Perrett, Toby}
+  booktitle={The 18th IEEE International Conference on Advanced Video and Signal-Based Surveillance (AVSS)},
+  title={Refining Action Boundaries for One-stage Detection},
+  year={2022}}
 ```
 
 ## Dependencies
